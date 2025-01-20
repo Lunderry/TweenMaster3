@@ -1,0 +1,9 @@
+{
+  "name": "TweenMaster3",
+  "tree": {
+    "$className": "DataModel",
+    "Tween": {
+      "$path": "out"
+    }
+  }
+}
