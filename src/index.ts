@@ -1,34 +1,38 @@
 import { Action, ObjectTween } from "./Types";
 import * as Utility from "./Utilities";
 
-export default class<K extends keyof Tweenable & Instance> {
+export default class {
 	//properties
-	Objects: ObjectTween<K>[];
+	Objects: ObjectTween[];
 	Info: TweenInfo;
-	Action: Action<K>;
+	Action: Action;
 
 	Tweens: Tween[] = [];
 	isActive = false;
-	PlaybackState: Enum.PlaybackState | undefined;
 	LastAction = "";
 
-	constructor(_instance: Instance | Instance[], info: TweenInfo, Action: Action<K>) {
+	constructor(_instance: Instance | Instance[], info: TweenInfo, Action: Action) {
 		this.Info = info;
 
 		if (type(_instance) === "table") {
-			this.Objects = _instance as ObjectTween<K>[];
+			this.Objects = _instance as ObjectTween[];
 		} else {
-			this.Objects = [_instance] as ObjectTween<K>[];
+			this.Objects = [_instance] as ObjectTween[];
 		}
-		this.Action = Utility.Clear_Action(this.Objects, Action);
-		this.Tweens = Utility.CreateTweens(this.Objects, info, this.Action);
+		this.Action = Action;
 	}
 
-	ChangeAction(Action: Action<K>) {
-		this.Action = Utility.Clear_Action(this.Objects, Action);
+	ChangeAction(Action: Action) {
+		this.Action = Action;
+		this.Cancel();
+	}
+	ChangeInfo(info: TweenInfo) {
+		this.Info = info;
 		this.Cancel();
 	}
 	Play() {
+		this.Tweens = Utility.CreateTweens(this.Objects, this.Info, this.Action);
+
 		this.LastAction = "Play";
 		this.isActive = true;
 
@@ -41,6 +45,8 @@ export default class<K extends keyof Tweenable & Instance> {
 		this.isActive = false;
 	}
 	Wait() {
+		this.Tweens = Utility.CreateTweens(this.Objects, this.Info, this.Action);
+
 		this.LastAction = "Wait";
 		this.isActive = true;
 

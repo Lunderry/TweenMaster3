@@ -1,4 +1,4 @@
-export type functAction<K> = (instance: Instance[]) => K;
+export type functAction = (instance: Instance) => Tweenable;
 
-export type ObjectTween<K> = Instance & { [key in keyof K]: boolean | undefined };
-export type Action<K extends keyof Tweenable & Instance> = Map<Tweenable, K | functAction<K>>;
+export type ObjectTween = Instance & { [key in keyof Tweenable]: boolean | undefined };
+export type Action = Map<Tweenable, Tweenable | functAction>;

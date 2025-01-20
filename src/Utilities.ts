@@ -1,46 +1,35 @@
 import { TweenService } from "@rbxts/services";
 import { Action, functAction, ObjectTween } from "./Types";
 
-export function Clear_Action<K extends keyof Tweenable & Instance>(object: Instance[], action: Action<K>): Action<K> {
-	const map: Action<K> = new Map();
-
-	for (const [property, act] of action) {
-		if (type(act) === "function") {
-			const funct = act as functAction<K>;
-			map.set(property, funct(object));
-			continue;
-		}
-		const result = act;
-
-		map.set(property, result);
-	}
-	return map;
-}
-
-function verifyAction<K extends keyof Tweenable & Instance>(object: ObjectTween<K>, Action: Action<K>): Action<K> {
-	const action: Action<K> = new Map();
+function verifyAction(object: ObjectTween, Action: Action): Action {
+	const action: Action = new Map();
 
 	Action.forEach((property, index) => {
+		let result;
+
 		if (type(property) === "function") {
-			return;
+			const funct = property as functAction;
+			result = funct(object);
 		}
+
 		const success = pcall(() => {
-			return object[property as K];
+			return object[property as keyof Tweenable & Instance];
 		});
 
 		if (success === undefined) {
 			return;
 		}
-		action.set(index, property);
+
+		if (result === undefined) {
+			result = success;
+		}
+
+		action.set(index, result);
 	});
 
 	return action;
 }
-export function CreateTweens<K extends keyof Tweenable & Instance>(
-	objects: ObjectTween<K>[],
-	info: TweenInfo,
-	Action: Action<K>,
-): Tween[] {
+export function CreateTweens(objects: ObjectTween[], info: TweenInfo, Action: Action): Tween[] {
 	const tweens = [];
 	for (const obj of objects) {
 		const _action = verifyAction(obj, Action) as Partial<ExtractMembers<Instance, Tweenable>>;
@@ -65,5 +54,3 @@ export function _InitModel(model: Model): CFrameValue {
 
 	return cframeValue;
 }
-
-print("a");
