@@ -1,7 +1,8 @@
+import { ReplicatedStorage } from "@rbxts/services";
 import { Action, ObjectTween } from "./Types";
 import * as Utility from "./Utilities";
 
-export default class {
+export default abstract class {
 	//properties
 	Objects: ObjectTween[];
 	Info: TweenInfo;

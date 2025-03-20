@@ -1,4 +1,4 @@
-import { Action, ObjectTween } from "./src/Types";
+import { Action, ObjectTween } from "./src/shared/Types";
 
 declare class TweenMaster3 {
 	Objects: ObjectTween[];

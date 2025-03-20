@@ -1,9 +1,24 @@
 {
   "name": "TweenMaster3",
+  "globIgnorePaths": [
+    "**/.package-lock.json"
+  ],
   "tree": {
     "$className": "DataModel",
-    "Tween": {
-      "$path": "out"
+    "ClientTween": {
+      "$path": "out/client"
+    },
+    "ServerScriptService": {
+      "$className": "ServerScriptService",
+      "ServerTween": {
+        "$path": "out/server"
+      }
+    },
+    "ReplicatedStorage": {
+      "$className": "ReplicatedStorage",
+      "TweenMaster3": {
+        "$path": "out/shared"
+      }
     }
   }
 }

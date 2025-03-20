@@ -1,10 +1,10 @@
 import { TweenService } from "@rbxts/services";
 import { Action, functAction, ObjectTween } from "./Types";
 
-function verifyAction(object: ObjectTween, Action: Action): Action {
-	const action: Action = new Map();
+function verifyAction(object: ObjectTween, action: Action): Action {
+	const newAction: Action = {};
 
-	Action.forEach((property, index) => {
+	for (const [index, property] of pairs(action)) {
 		let result;
 
 		if (type(property) === "function") {
@@ -17,22 +17,21 @@ function verifyAction(object: ObjectTween, Action: Action): Action {
 		});
 
 		if (success === undefined) {
-			return;
+			continue;
 		}
 
 		if (result === undefined) {
 			result = success;
 		}
 
-		action.set(index, result);
-	});
-
-	return action;
+		newAction[index] = result;
+	}
+	return newAction;
 }
-export function CreateTweens(objects: ObjectTween[], info: TweenInfo, Action: Action): Tween[] {
+export function CreateTweens(objects: ObjectTween[], info: TweenInfo, action: Action): Tween[] {
 	const tweens = [];
 	for (const obj of objects) {
-		const _action = verifyAction(obj, Action) as Partial<ExtractMembers<Instance, Tweenable>>;
+		const _action = verifyAction(obj, action) as Partial<ExtractMembers<Instance, Tweenable>>;
 		const _tween = TweenService.Create(obj, info, _action);
 		tweens.push(_tween);
 	}
