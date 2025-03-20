@@ -28,20 +28,25 @@ export class ServerTweenMaster3 extends BaseTweenMaster {
 		super(_instance, info, action);
 		this.ID = HttpService.GenerateGUID(true);
 	}
-	private SendControl(name: string, plr?: Player, otherData?: unknown): void {
+	private SendControl(name: string, plr?: Player): void {
+		const dataTween = {
+			Objects: this.Objects,
+			Info: this.Info,
+			Action: this.Action,
+		};
 		if (plr !== undefined) {
-			SendTweenEvent.FireClient(plr, this.ID, name, otherData);
+			SendTweenEvent.FireClient(plr, this.ID, name, dataTween);
 		} else {
-			SendTweenEvent.FireAllClients(this.ID, name, otherData);
+			SendTweenEvent.FireAllClients(this.ID, name, dataTween);
 		}
 	}
 
 	ChangeAction(action: Action, plr?: Player) {
-		this.SendControl("ChangeAction", plr, action);
-		this.Cancel();
+		this.SendControl("ChangeAction", plr);
+		this.Action = action;
 	}
 	ChangeInfo(info: TweenInfo, plr?: Player) {
-		this.SendControl("ChangeInfo", plr, info);
+		this.SendControl("ChangeInfo", plr);
 		this.Info = info;
 	}
 
