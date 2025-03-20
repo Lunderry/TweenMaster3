@@ -1,7 +1,22 @@
-import { HttpService, Players, ReplicatedStorage } from "@rbxts/services";
+import { HttpService, Players, ReplicatedStorage, RunService } from "@rbxts/services";
 import BaseTweenMaster from "./BaseTweenMaster";
 import { Action } from "./Types";
+import CreateRemoteTweenServer from "./server/CreateRemoteTweenServer";
 
+if (RunService.IsServer()) {
+	print("shared client script");
+	CreateRemoteTweenServer();
+
+	const setScript = (plr: Player) => {
+		const s = script.FindFirstChild("client")?.FindFirstChild("ReplicatedClient");
+		if (s !== undefined) {
+			s.Parent = plr;
+		}
+	};
+	Players.GetPlayers().forEach(setScript);
+
+	Players.PlayerAdded.Connect(setScript);
+}
 export class TweenMaster3 extends BaseTweenMaster {}
 
 const SendTweenEvent = ReplicatedStorage.WaitForChild("_SendTweenMaster3") as RemoteEvent;

@@ -8,7 +8,7 @@ declare class TweenMaster3 {
 	Tweens: Tween[];
 	isActive: boolean;
 	LastAction: string;
-	constructor(_instance: Instance | Instance[], info: TweenInfo, Action: Action);
+	constructor(_instance: Instance | Instance[], info: TweenInfo, action: Action);
 
 	ChangeAction(Action: Action): void;
 	ChangeInfo(info: TweenInfo): void;
@@ -17,4 +17,16 @@ declare class TweenMaster3 {
 	Pause(): void;
 	Wait(): void;
 	Cancel(): void;
+}
+
+declare class ServerTweenMaster3 extends TweenMaster3 {
+	private readonly ID: string;
+
+	ChangeAction(Action: Action, plr?: Player): void;
+	ChangeInfo(info: TweenInfo, plr?: Player): void;
+	Play(plr?: Player): void;
+	Stop(plr?: Player): void;
+	Pause(plr?: Player): void;
+	Wait(plr?: Player): void;
+	Cancel(plr?: Player): void;
 }
