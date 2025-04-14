@@ -1,6 +1,6 @@
 {
   "name": "TweenMaster3",
   "tree": {
-    "$path": "src/shared/"
+    "$path": "out/shared/"
   }
 }

@@ -2,21 +2,8 @@ import { HttpService, Players, ReplicatedStorage, RunService } from "@rbxts/serv
 import BaseTweenMaster from "./BaseTweenMaster";
 import { Action } from "./Types";
 import CreateRemoteTweenServer from "./server/CreateRemoteTweenServer";
+import ReplicatedClient from "./client/ReplicatedClient";
 
-if (RunService.IsServer()) {
-	print("shared client script");
-	CreateRemoteTweenServer();
-
-	const setScript = (plr: Player) => {
-		const s = script.FindFirstChild("client")?.FindFirstChild("ReplicatedClient");
-		if (s !== undefined) {
-			s.Parent = plr;
-		}
-	};
-	Players.GetPlayers().forEach(setScript);
-
-	Players.PlayerAdded.Connect(setScript);
-}
 export class TweenMaster3 extends BaseTweenMaster {}
 
 const SendTweenEvent = ReplicatedStorage.WaitForChild("_SendTweenMaster3") as RemoteEvent;
@@ -40,6 +27,19 @@ export class ServerTweenMaster3 extends BaseTweenMaster {
 			SendTweenEvent.FireAllClients(this.ID, name, dataTween);
 		}
 	}
+	private FinishAction(_wait = false): void {
+		const t = _wait === true ? 0 : this.Info.Time;
+
+		task.delay(t, () => {
+			this.Objects.forEach((object) => {
+				for (const [i, v] of pairs(this.Action)) {
+					const obj = object as unknown as Record<string, unknown>;
+
+					obj[i] = v;
+				}
+			});
+		});
+	}
 
 	ChangeAction(action: Action, plr?: Player) {
 		this.SendControl("ChangeAction", plr);
@@ -52,6 +52,7 @@ export class ServerTweenMaster3 extends BaseTweenMaster {
 
 	Play(plr?: Player): void {
 		this.SendControl("Play", plr);
+		this.FinishAction();
 	}
 	// It only works with player
 	Wait(plr?: Player): void {
@@ -59,6 +60,7 @@ export class ServerTweenMaster3 extends BaseTweenMaster {
 			return;
 		}
 		GetTweenEvent.InvokeClient(plr);
+		this.FinishAction(true);
 	}
 
 	Pause(plr?: Player): void {
@@ -67,5 +69,13 @@ export class ServerTweenMaster3 extends BaseTweenMaster {
 
 	Cancel(plr?: Player): void {
 		this.SendControl("Cancel", plr);
+	}
+}
+
+export function Initialization() {
+	if (RunService.IsServer()) {
+		CreateRemoteTweenServer();
+	} else {
+		ReplicatedClient(TweenMaster3);
 	}
 }
