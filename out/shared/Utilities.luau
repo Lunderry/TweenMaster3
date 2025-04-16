@@ -8,15 +8,8 @@ local function verifyAction(object, action)
 		if type(property) == "function" then
 			local funct = property
 			result = funct(object)
-		end
-		local success = pcall(function()
-			return object[property]
-		end)
-		if success == nil then
-			continue
-		end
-		if result == nil then
-			result = success
+		else
+			result = property
 		end
 		newAction[index] = result
 	end

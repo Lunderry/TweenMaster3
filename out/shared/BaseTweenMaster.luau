@@ -57,34 +57,32 @@ do
 		end
 		-- ▲ ReadonlyArray.forEach ▲
 		local isCompleted = false
-		task.defer(function()
-			while not isCompleted do
-				local _exp_1 = self.Tweens
-				-- ▼ ReadonlyArray.every ▼
-				local _result = true
-				local _callback_1 = function(tween)
-					local playbackState = tween.PlaybackState
-					if playbackState == Enum.PlaybackState.Completed then
-						isCompleted = true
-					elseif playbackState == Enum.PlaybackState.Cancelled then
-						isCompleted = true
-						return true
-					else
-						isCompleted = false
-						return true
-					end
+		while not isCompleted do
+			local _exp_1 = self.Tweens
+			-- ▼ ReadonlyArray.every ▼
+			local _result = true
+			local _callback_1 = function(tween)
+				local playbackState = tween.PlaybackState
+				if playbackState == Enum.PlaybackState.Completed then
+					isCompleted = true
+				elseif playbackState == Enum.PlaybackState.Cancelled then
+					isCompleted = true
+					return true
+				else
+					isCompleted = false
+					return true
 				end
-				for _k, _v in _exp_1 do
-					if not _callback_1(_v, _k - 1, _exp_1) then
-						_result = false
-						break
-					end
-				end
-				-- ▲ ReadonlyArray.every ▲
-				task.wait(0)
 			end
-			self.isActive = false
-		end)
+			for _k, _v in _exp_1 do
+				if not _callback_1(_v, _k - 1, _exp_1) then
+					_result = false
+					break
+				end
+			end
+			-- ▲ ReadonlyArray.every ▲
+			task.wait(0)
+		end
+		self.isActive = false
 	end
 	function default:Pause()
 		self.LastAction = "Pause"

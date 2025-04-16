@@ -57,6 +57,26 @@ do
 			SendTweenEvent:FireAllClients(self.ID, name, dataTween)
 		end
 	end
+	function ServerTweenMaster3:FinishAction(_wait)
+		if _wait == nil then
+			_wait = false
+		end
+		local t = if _wait == true then 0 else self.Info.Time
+		task.delay(t, function()
+			local _exp = self.Objects
+			-- ▼ ReadonlyArray.forEach ▼
+			local _callback = function(object)
+				for i, v in pairs(self.Action) do
+					local obj = object
+					obj[i] = v
+				end
+			end
+			for _k, _v in _exp do
+				_callback(_v, _k - 1, _exp)
+			end
+			-- ▲ ReadonlyArray.forEach ▲
+		end)
+	end
 	function ServerTweenMaster3:ChangeAction(action, plr)
 		self:SendControl("ChangeAction", plr)
 		self.Action = action
@@ -67,12 +87,14 @@ do
 	end
 	function ServerTweenMaster3:Play(plr)
 		self:SendControl("Play", plr)
+		self:FinishAction()
 	end
 	function ServerTweenMaster3:Wait(plr)
 		if plr == nil then
 			return nil
 		end
 		GetTweenEvent:InvokeClient(plr)
+		self:FinishAction(true)
 	end
 	function ServerTweenMaster3:Pause(plr)
 		self:SendControl("Pause", plr)

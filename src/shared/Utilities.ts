@@ -7,21 +7,11 @@ function verifyAction(object: ObjectTween, action: Action): Action {
 	for (const [index, property] of pairs(action)) {
 		let result;
 
-		if (type(property) === "function") {
+		if (typeIs(property, "function")) {
 			const funct = property as functAction;
 			result = funct(object);
-		}
-
-		const success = pcall(() => {
-			return object[property as keyof Tweenable & Instance];
-		});
-
-		if (success === undefined) {
-			continue;
-		}
-
-		if (result === undefined) {
-			result = success;
+		} else {
+			result = property;
 		}
 
 		newAction[index] = result;

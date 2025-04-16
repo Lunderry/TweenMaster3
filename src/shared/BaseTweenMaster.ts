@@ -1,4 +1,3 @@
-import { ReplicatedStorage } from "@rbxts/services";
 import { Action, ObjectTween } from "./Types";
 import * as Utility from "./Utilities";
 
@@ -58,24 +57,22 @@ export default abstract class {
 		});
 
 		let isCompleted = false;
-		task.defer(() => {
-			while (!isCompleted) {
-				this.Tweens.every((tween) => {
-					const playbackState = tween.PlaybackState;
-					if (playbackState === Enum.PlaybackState.Completed) {
-						isCompleted = true;
-					} else if (playbackState === Enum.PlaybackState.Cancelled) {
-						isCompleted = true;
-						return true;
-					} else {
-						isCompleted = false;
-						return true;
-					}
-				});
-				task.wait(0);
-			}
-			this.isActive = false;
-		});
+		while (!isCompleted) {
+			this.Tweens.every((tween) => {
+				const playbackState = tween.PlaybackState;
+				if (playbackState === Enum.PlaybackState.Completed) {
+					isCompleted = true;
+				} else if (playbackState === Enum.PlaybackState.Cancelled) {
+					isCompleted = true;
+					return true;
+				} else {
+					isCompleted = false;
+					return true;
+				}
+			});
+			task.wait(0);
+		}
+		this.isActive = false;
 	}
 
 	Pause() {
